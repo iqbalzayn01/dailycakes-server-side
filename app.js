@@ -10,6 +10,7 @@ const v1 = "/api/cms";
 const categoriesRouter = require("./app/api/categories/router");
 const productsRouter = require("./app/api/products/router");
 const imagesRouter = require("./app/api/images/router");
+const usersRouter = require("./app/api/users/router");
 
 // Middlewares
 const notFoundMiddleware = require("./app/middlewares/not-found");
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 app.use(v1, categoriesRouter);
 app.use(v1, productsRouter);
 app.use(v1, imagesRouter);
+app.use(v1, usersRouter);
 
 // Middlewares
 app.use(notFoundMiddleware);
