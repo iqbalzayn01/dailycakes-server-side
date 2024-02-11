@@ -4,22 +4,37 @@ const bcrypt = require("bcryptjs");
 
 let customerSchema = Schema(
   {
-    name: {
+    firstname: {
       type: String,
-      minLength: [3, "Panjang nama customer minimal 3 karakter"],
-      maxLength: [40, "Panjang nama customer maksimal 40 karakter"],
-      required: [true, "Nama customer harus diisi"],
+      required: [true, "Firstname harus diisi"],
+      minlength: 3,
+      maxlength: 50,
+    },
+    lastname: {
+      type: String,
+      required: [true, "Lastname harus diisi"],
+      minlength: 3,
+      maxlength: 50,
     },
     email: {
       type: String,
-      minLength: [3, "Panjang email minimal 3 karakter"],
-      maxLength: [30, "Panjang email maksimal 30 karakter"],
+      unique: true,
       required: [true, "Email harus diisi"],
     },
     password: {
       type: String,
       required: [true, "Password harus diisi"],
       minlength: 6,
+    },
+    address: {
+      type: String,
+      required: [true, "Address harus diisi"],
+      minlength: 20,
+    },
+    notelp: {
+      type: String,
+      required: [true, "Nomor Telpon harus diisi"],
+      maxlength: 15,
     },
   },
   { timestamps: true }

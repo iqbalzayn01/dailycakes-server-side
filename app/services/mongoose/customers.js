@@ -1,25 +1,69 @@
 // import model Customers
 const Customers = require("../../api/customers/model");
 
+const {
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} = require("../../errors");
+const { createTokenCustomers, createJWT } = require("../../utils");
+
 // import custom error not found dan bad request
 const { NotFoundError, BadRequestError } = require("../../errors");
 
-const getAllCustomers = async () => {
-  const result = await Customers.find();
+const signUpCustomers = async (req) => {
+  const { firstname, lastname, email, password, address, notelp } = req.body;
+
+  // cari Customers dengan field name
+  const check = await Customers.findOne({ firstname, lastname, email });
+
+  // apa bila check true / data Customers sudah ada maka kita tampilkan error bad request dengan message kategori nama duplikat
+  if (check) throw new BadRequestError("Anda sudah terdaftar");
+
+  const result = await Customers.create({
+    firstname,
+    lastname,
+    email,
+    password,
+    address,
+    notelp,
+  });
+
+  delete result._doc.password;
 
   return result;
 };
 
-const createCustomers = async (req) => {
-  const { name } = req.body;
+const signinCustomers = async (req) => {
+  const { email, password } = req.body;
 
-  // cari Customers dengan field name
-  const check = await Customers.findOne({ name });
+  if (!email || !password) {
+    throw new BadRequestError("Please provide email and password");
+  }
 
-  // apa bila check true / data Customers sudah ada maka kita tampilkan error bad request dengan message kategori nama duplikat
-  if (check) throw new BadRequestError("Nama anda sudah sudah terdaftar");
+  const result = await Customers.findOne({ email: email });
 
-  const result = await Customers.create({ name });
+  if (!result) {
+    throw new UnauthorizedError("Invalid Credentials");
+  }
+
+  if (result.status === "tidak aktif") {
+    throw new UnauthorizedError("Akun anda belum aktif");
+  }
+
+  const isPasswordCorrect = await result.comparePassword(password);
+
+  if (!isPasswordCorrect) {
+    throw new UnauthorizedError("Invalid Credentials");
+  }
+
+  const token = createJWT({ payload: createTokenCustomers(result) });
+
+  return token;
+};
+
+const getAllCustomers = async () => {
+  const result = await Customers.find();
 
   return result;
 };
@@ -74,8 +118,8 @@ const deleteCustomers = async (req) => {
 };
 
 module.exports = {
+  signUpCustomers,
   getAllCustomers,
-  createCustomers,
   getOneCustomers,
   updateCustomers,
   deleteCustomers,

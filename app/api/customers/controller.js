@@ -1,17 +1,17 @@
-// import services categories
+// import services customers
 const {
-  getAllCategories,
-  getOneCategories,
-  updateCategories,
-  createCategories,
-  deleteCategories,
-} = require("../../services/mongoose/categories");
+  getAllCustomers,
+  getOneCustomers,
+  updateCustomers,
+  createCustomers,
+  deleteCustomers,
+} = require("../../services/mongoose/customers");
 
 const { StatusCodes } = require("http-status-codes");
 
 const create = async (req, res, next) => {
   try {
-    const result = await createCategories(req);
+    const result = await createCustomers(req);
 
     res.status(StatusCodes.CREATED).json({
       data: result,
@@ -23,7 +23,7 @@ const create = async (req, res, next) => {
 
 const index = async (req, res, next) => {
   try {
-    const result = await getAllCategories(req);
+    const result = await getAllCustomers(req);
 
     res.status(StatusCodes.OK).json({
       data: result,
@@ -35,7 +35,7 @@ const index = async (req, res, next) => {
 
 const find = async (req, res, next) => {
   try {
-    const result = await getOneCategories(req);
+    const result = await getOneCustomers(req);
 
     res.status(StatusCodes.OK).json({
       data: result,
@@ -47,7 +47,7 @@ const find = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const result = await updateCategories(req);
+    const result = await updateCustomers(req);
 
     res.status(StatusCodes.OK).json({
       data: result,
@@ -59,7 +59,7 @@ const update = async (req, res, next) => {
 
 const destroy = async (req, res, next) => {
   try {
-    const result = await deleteCategories(req);
+    const result = await deleteCustomers(req);
 
     res.status(StatusCodes.OK).json({
       data: result,

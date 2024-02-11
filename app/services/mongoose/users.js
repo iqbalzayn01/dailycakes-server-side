@@ -15,6 +15,8 @@ const createUsers = async (req, res) => {
     role,
   });
 
+  delete result._doc.password;
+
   return result;
 };
 
