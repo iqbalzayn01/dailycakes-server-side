@@ -1,19 +1,70 @@
 // import services customers
 const {
+  signUpCustomers,
+  signinCustomers,
+  getAllProducts,
+  getOneProduct,
+  getAllOrders,
   getAllCustomers,
   getOneCustomers,
   updateCustomers,
-  createCustomers,
   deleteCustomers,
 } = require("../../services/mongoose/customers");
 
 const { StatusCodes } = require("http-status-codes");
 
-const create = async (req, res, next) => {
+const signup = async (req, res, next) => {
   try {
-    const result = await createCustomers(req);
+    const result = await signUpCustomers(req);
 
     res.status(StatusCodes.CREATED).json({
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+const signin = async (req, res, next) => {
+  try {
+    const result = await signinCustomers(req);
+
+    res.status(StatusCodes.CREATED).json({
+      data: { token: result },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getAllLandingPage = async (req, res, next) => {
+  try {
+    const result = await getAllProducts(req);
+
+    res.status(StatusCodes.OK).json({
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getDetailLandingPage = async (req, res, next) => {
+  try {
+    const result = await getOneProduct(req);
+
+    res.status(StatusCodes.OK).json({
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getDashboard = async (req, res, next) => {
+  try {
+    const result = await getAllOrders(req);
+
+    res.status(StatusCodes.OK).json({
       data: result,
     });
   } catch (err) {
@@ -70,9 +121,13 @@ const destroy = async (req, res, next) => {
 };
 
 module.exports = {
+  signup,
+  signin,
+  getAllLandingPage,
+  getDetailLandingPage,
+  getDashboard,
   index,
   find,
   update,
   destroy,
-  create,
 };

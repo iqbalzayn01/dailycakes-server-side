@@ -1,18 +1,32 @@
 // import model Customers
 const Customers = require("../../api/customers/model");
 
+// import models
+const Products = require("../../api/products/model");
+
+// import custom error not found dan bad request
 const {
   BadRequestError,
   NotFoundError,
   UnauthorizedError,
 } = require("../../errors");
+
 const { createTokenCustomers, createJWT } = require("../../utils");
 
-// import custom error not found dan bad request
-const { NotFoundError, BadRequestError } = require("../../errors");
-
 const signUpCustomers = async (req) => {
-  const { firstname, lastname, email, password, address, notelp } = req.body;
+  const {
+    firstname,
+    lastname,
+    email,
+    password,
+    confirmPassword,
+    address,
+    notelp,
+  } = req.body;
+
+  if (password !== confirmPassword) {
+    throw new BadRequestError("Password dan Konfirmasi password tidak cocok");
+  }
 
   // cari Customers dengan field name
   const check = await Customers.findOne({ firstname, lastname, email });
@@ -41,14 +55,10 @@ const signinCustomers = async (req) => {
     throw new BadRequestError("Please provide email and password");
   }
 
-  const result = await Customers.findOne({ email: email });
+  const result = await Participant.findOne({ email: email });
 
   if (!result) {
     throw new UnauthorizedError("Invalid Credentials");
-  }
-
-  if (result.status === "tidak aktif") {
-    throw new UnauthorizedError("Akun anda belum aktif");
   }
 
   const isPasswordCorrect = await result.comparePassword(password);
@@ -62,7 +72,34 @@ const signinCustomers = async (req) => {
   return token;
 };
 
-const getAllCustomers = async () => {
+const getAllProducts = async (req) => {
+  const result = await Products.find()
+    .populate("category")
+    .populate("image")
+    .select("_id title date tickets venueName");
+
+  return result;
+};
+
+const getOneProduct = async (req) => {
+  const { id, productName } = req.params;
+  const result = await Products.findOne({ _id: id, productName })
+    .populate("category")
+    .populate({ path: "talent", populate: "image" })
+    .populate("image");
+
+  if (!result) throw new NotFoundError(`Tidak ada produk dengan id :  ${id}`);
+
+  return result;
+};
+
+const getAllOrders = async (req) => {
+  console.log(req.participant);
+  const result = await Orders.find({ participant: req.participant.id });
+  return result;
+};
+
+const getAllCustomers = async (req) => {
   const result = await Customers.find();
 
   return result;
@@ -73,7 +110,7 @@ const getOneCustomers = async (req) => {
 
   const result = await Customers.findOne({ _id: id });
 
-  if (!result) throw new NotFoundError(`Tidak ada customer dengan id :  ${id}`);
+  if (!result) throw new NotFoundError(`Tidak ada Customer dengan id :  ${id}`);
 
   return result;
 };
@@ -119,6 +156,10 @@ const deleteCustomers = async (req) => {
 
 module.exports = {
   signUpCustomers,
+  signinCustomers,
+  getAllProducts,
+  getOneProduct,
+  getAllOrders,
   getAllCustomers,
   getOneCustomers,
   updateCustomers,

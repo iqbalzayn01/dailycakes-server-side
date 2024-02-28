@@ -29,7 +29,6 @@ let customerSchema = Schema(
     address: {
       type: String,
       required: [true, "Address harus diisi"],
-      minlength: 20,
     },
     notelp: {
       type: String,
@@ -53,4 +52,4 @@ customerSchema.methods.comparePassword = async function (canditatePassword) {
   return isMatch;
 };
 
-module.exports = model("Customer", categorySchema);
+module.exports = model("Customer", customerSchema);
