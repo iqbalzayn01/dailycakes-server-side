@@ -4,7 +4,7 @@ const Categories = require("../../api/categories/model");
 // import custom error not found dan bad request
 const { NotFoundError, BadRequestError } = require("../../errors");
 
-const getAllCategories = async () => {
+const getAllCategories = async (req) => {
   const result = await Categories.find();
 
   return result;

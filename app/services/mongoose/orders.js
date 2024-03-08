@@ -1,12 +1,12 @@
-// import model Products
-const Products = require("../../api/products/model");
+// import model Orders
+const Orders = require("../../api/orders/model");
 const { checkingCategories } = require("./categories");
 const { checkingImage } = require("./images");
 
 // import custom error not found dan bad request
 const { NotFoundError, BadRequestError } = require("../../errors");
 
-const getAllProducts = async (req) => {
+const getAllOrders = async (req) => {
   const { keyword, category } = req.query;
   let condition = {};
 
@@ -18,29 +18,29 @@ const getAllProducts = async (req) => {
     condition = { ...condition, category: category };
   }
 
-  //   const result = await Products.find();
-  const result = await Products.find(condition).populate({
-    path: "category",
+  //   const result = await Orders.find();
+  const result = await Orders.find(condition).populate({
+    path: "order",
     select: "_id name",
   });
 
   return result;
 };
 
-const createProducts = async (req) => {
+const createOrders = async (req) => {
   const { productName, description, price, stock, category, image } = req.body;
 
   // Cari Category dan Image dengan field id
   await checkingCategories(category);
   await checkingImage(image);
 
-  // cari Products dengan field name
-  const check = await Products.findOne({ productName });
+  // cari Orders dengan field name
+  const check = await Orders.findOne({ productName });
 
-  // apa bila check true / data Products sudah ada maka kita tampilkan error bad request dengan message Products nama duplikat
+  // apa bila check true / data Orders sudah ada maka kita tampilkan error bad request dengan message Orders nama duplikat
   if (check) throw new BadRequestError("Nama produk sudah terdaftar");
 
-  const result = await Products.create({
+  const result = await Orders.create({
     productName,
     description,
     price,
@@ -52,30 +52,30 @@ const createProducts = async (req) => {
   return result;
 };
 
-const getOneProducts = async (req) => {
+const getOneOrders = async (req) => {
   const { id } = req.params;
 
-  const result = await Products.findOne({ _id: id });
+  const result = await Orders.findOne({ _id: id });
 
   if (!result) throw new NotFoundError(`Tidak ada produk dengan id :  ${id}`);
 
   return result;
 };
 
-const updateProducts = async (req) => {
+const updateOrders = async (req) => {
   const { id } = req.params;
   const { productName, description, price, stock, category, image } = req.body;
 
-  // cari Products dengan field name dan id selain dari yang dikirim dari params
-  const check = await Products.findOne({
+  // cari Orders dengan field name dan id selain dari yang dikirim dari params
+  const check = await Orders.findOne({
     productName,
     _id: { $ne: id },
   });
 
-  // apa bila check true / data Products sudah ada maka kita tampilkan pesan error bad request
+  // apa bila check true / data Orders sudah ada maka kita tampilkan pesan error bad request
   if (check) throw new BadRequestError("produk nama duplikat");
 
-  const result = await Products.findOneAndUpdate(
+  const result = await Orders.findOneAndUpdate(
     { _id: id },
     { productName, description, price, stock, category, image },
     { new: true, runValidators: true }
@@ -87,10 +87,10 @@ const updateProducts = async (req) => {
   return result;
 };
 
-const deleteProducts = async (req) => {
+const deleteOrders = async (req) => {
   const { id } = req.params;
 
-  const result = await Products.findOne({
+  const result = await Orders.findOne({
     _id: id,
   });
 
@@ -101,18 +101,18 @@ const deleteProducts = async (req) => {
   return result;
 };
 
-// const checkingProducts = async (id) => {
-//   const result = await Products.findOne({ _id: id });
+// const checkingOrders = async (id) => {
+//   const result = await Orders.findOne({ _id: id });
 
-//   if (!result) throw new NotFoundError(`Tidak ada Products dengan id :  ${id}`);
+//   if (!result) throw new NotFoundError(`Tidak ada Orders dengan id :  ${id}`);
 
 //   return result;
 // };
 
 module.exports = {
-  getAllProducts,
-  createProducts,
-  getOneProducts,
-  updateProducts,
-  deleteProducts,
+  getAllOrders,
+  createOrders,
+  getOneOrders,
+  updateOrders,
+  deleteOrders,
 };

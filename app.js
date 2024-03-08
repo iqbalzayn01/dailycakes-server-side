@@ -5,7 +5,18 @@ const logger = require("morgan");
 
 const app = express();
 
-const v1 = "/api/cms";
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
+const v1 = "/api";
 // Router
 const categoriesRouter = require("./app/api/categories/router");
 const productsRouter = require("./app/api/products/router");
@@ -13,6 +24,7 @@ const imagesRouter = require("./app/api/images/router");
 const usersRouter = require("./app/api/users/router");
 const authCMSRouter = require("./app/api/auth/router");
 const customersRouter = require("./app/api/customers/router");
+const userRefreshTokenRouter = require("./app/api/userRefreshToken/router");
 
 // Middlewares
 const notFoundMiddleware = require("./app/middlewares/not-found");
@@ -32,12 +44,13 @@ app.get("/", (req, res) => {
 });
 
 // Router
-app.use(v1, categoriesRouter);
-app.use(v1, productsRouter);
-app.use(v1, imagesRouter);
-app.use(v1, usersRouter);
-app.use(v1, authCMSRouter);
-app.use(v1, customersRouter);
+app.use(`${v1}/cms`, categoriesRouter);
+app.use(`${v1}/cms`, productsRouter);
+app.use(`${v1}/cms`, imagesRouter);
+app.use(`${v1}/cms`, usersRouter);
+app.use(`${v1}/cms`, authCMSRouter);
+app.use(`${v1}/cms`, customersRouter);
+app.use(`${v1}/cms`, userRefreshTokenRouter);
 
 // Middlewares
 app.use(notFoundMiddleware);

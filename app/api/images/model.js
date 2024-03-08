@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { model, Schema } = mongoose;
 
-let imageSchema = Schema(
+const imageSchema = Schema(
   {
     name: { type: String },
   },
