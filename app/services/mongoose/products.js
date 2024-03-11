@@ -1,7 +1,7 @@
 // import model Products
 const Products = require("../../api/products/model");
 const { checkingCategories } = require("./categories");
-const { checkingImage } = require("./images");
+const { createImages, checkingImage } = require("./images");
 
 // import custom error not found dan bad request
 const { NotFoundError, BadRequestError } = require("../../errors");
@@ -18,7 +18,7 @@ const getAllProducts = async (req) => {
     condition = { ...condition, category: category };
   }
 
-  //   const result = await Products.find();
+  // const result = await Products.find();
   const result = await Products.find(condition).populate({
     path: "category",
     select: "_id name",

@@ -18,19 +18,24 @@ router.get(
   find
 );
 
-router.post("/products", authenticateUser, authorizeRoles("karyawan"), create);
+router.post(
+  "/products",
+  authenticateUser,
+  authorizeRoles("karyawan", "admin"),
+  create
+);
 
 router.put(
   "/products/:id",
   authenticateUser,
-  authorizeRoles("karyawan"),
+  authorizeRoles("karyawan", "admin"),
   update
 );
 
 router.delete(
   "/products/:id",
   authenticateUser,
-  authorizeRoles("karyawan"),
+  authorizeRoles("karyawan", "admin"),
   destroy
 );
 
