@@ -35,6 +35,11 @@ const customerSchema = Schema(
       required: [true, "Nomor Telpon harus diisi"],
       maxlength: 15,
     },
+    role: {
+      type: String,
+      // enum: ["customer"],
+      default: "customer",
+    },
   },
   { timestamps: true }
 );

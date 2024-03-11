@@ -1,7 +1,14 @@
 const Users = require("../../api/users/model");
+const Customers = require("../../api/customers/model");
 const { BadRequestError, UnauthorizedError } = require("../../errors");
-const { createTokenUser, createJWT, createRefreshJWT } = require("../../utils");
+const {
+  createTokenUser,
+  createTokenCustomer,
+  createJWT,
+  createRefreshJWT,
+} = require("../../utils");
 const { createUserRefreshToken } = require("./userRefreshToken");
+const { createCustomerRefreshToken } = require("./customerRefreshToken");
 
 const signin = async (req) => {
   const { email, password } = req.body;
@@ -10,7 +17,18 @@ const signin = async (req) => {
     throw new BadRequestError("Please provide email and password");
   }
 
-  const result = await Users.findOne({ email: email });
+  let result, role;
+  // Check for Users
+  if (Users) {
+    result = await Users.findOne({ email: email });
+    role = result ? result.role : null;
+  }
+
+  // Check for Customers
+  if (Customers && !result) {
+    result = await Customers.findOne({ email: email });
+    role = "customer";
+  }
 
   if (!result) {
     throw new UnauthorizedError("Invalid Credentials");
@@ -22,20 +40,26 @@ const signin = async (req) => {
     throw new UnauthorizedError("Invalid Credentials");
   }
 
-  // Token
-  const token = createJWT({ payload: createTokenUser(result) });
-
-  const refreshToken = createRefreshJWT({ payload: createTokenUser(result) });
-  await createUserRefreshToken({
-    refreshToken,
-    user: result._id,
-  });
+  let token, refreshToken, firstname, lastname;
+  if (role === "karyawan" || role === "admin") {
+    token = createJWT({ payload: createTokenUser(result) });
+    refreshToken = createRefreshJWT({ payload: createTokenUser(result) });
+    await createUserRefreshToken({ refreshToken, user: result._id });
+  } else if (role === "customer") {
+    token = createJWT({ payload: createTokenCustomer(result) });
+    refreshToken = createRefreshJWT({ payload: createTokenCustomer(result) });
+    await createCustomerRefreshToken({ refreshToken, customer: result._id });
+    firstname = result.firstname;
+    lastname = result.lastname;
+  }
 
   return {
     token,
     refreshToken,
-    role: result.role,
+    firstname,
+    lastname,
     email: result.email,
+    role: result.role,
   };
 };
 

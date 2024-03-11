@@ -7,13 +7,4 @@ const createTokenUser = (user) => {
   };
 };
 
-const createTokenCustomer = (Customer) => {
-  return {
-    lastName: Customer.lastName,
-    CustomerId: Customer._id,
-    firstName: Customer.firstName,
-    email: Customer.email,
-  };
-};
-
-module.exports = { createTokenUser, createTokenCustomer };
+module.exports = { createTokenUser };

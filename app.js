@@ -25,6 +25,7 @@ const usersRouter = require("./app/api/users/router");
 const authCMSRouter = require("./app/api/auth/router");
 const customersRouter = require("./app/api/customers/router");
 const userRefreshTokenRouter = require("./app/api/userRefreshToken/router");
+const customerRefreshTokenRouter = require("./app/api/customerRefreshToken/router");
 
 // Middlewares
 const notFoundMiddleware = require("./app/middlewares/not-found");
@@ -51,6 +52,7 @@ app.use(`${v1}/cms`, usersRouter);
 app.use(`${v1}/cms`, authCMSRouter);
 app.use(`${v1}/cms`, customersRouter);
 app.use(`${v1}/cms`, userRefreshTokenRouter);
+app.use(`${v1}/cms`, customerRefreshTokenRouter);
 
 // Middlewares
 app.use(notFoundMiddleware);
