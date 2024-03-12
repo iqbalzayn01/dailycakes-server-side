@@ -2,19 +2,25 @@ const express = require("express");
 const router = express();
 const { create, index, find, update, destroy } = require("./controller");
 
-const { authenticateUser, authorizeRoles } = require("../../middlewares/auth");
+const {
+  authenticateUser,
+  authorizeRoles,
+  authorizeRolesCustomer,
+} = require("../../middlewares/auth");
 
 router.get(
   "/products",
   authenticateUser,
-  authorizeRoles("karyawan", "admin"),
+  // authorizeRoles("karyawan", "admin"),
+  // authorizeRolesCustomer("customer"),
   index
 );
 
 router.get(
   "/products/:id",
   authenticateUser,
-  authorizeRoles("karyawan", "admin"),
+  // authorizeRoles("karyawan", "admin"),
+  // authorizeRolesCustomer("customer"),
   find
 );
 

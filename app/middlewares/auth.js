@@ -70,4 +70,18 @@ const authorizeRoles = (...roles) => {
   };
 };
 
-module.exports = { authenticateUser, authorizeRoles, authenticateCustomer };
+const authorizeRolesCustomer = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.customer.role)) {
+      throw new UnauthorizedError("Unauthorized to access this route");
+    }
+    next();
+  };
+};
+
+module.exports = {
+  authenticateUser,
+  authorizeRoles,
+  authenticateCustomer,
+  authorizeRolesCustomer,
+};
