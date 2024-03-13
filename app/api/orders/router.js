@@ -7,18 +7,23 @@ const { authenticateUser, authorizeRoles } = require("../../middlewares/auth");
 router.get(
   "/products",
   authenticateUser,
-  authorizeRoles("karyawan", "admin"),
+  // authorizeRoles("karyawan", "admin"),
   index
 );
 
 router.get(
   "/products/:id",
   authenticateUser,
-  authorizeRoles("karyawan", "admin"),
+  // authorizeRoles("karyawan", "admin"),
   find
 );
 
-router.post("/products", authenticateUser, authorizeRoles("karyawan"), create);
+router.post(
+  "/products",
+  authenticateUser,
+  // authorizeRoles("karyawan"),
+  create
+);
 
 router.put(
   "/products/:id",
@@ -30,7 +35,7 @@ router.put(
 router.delete(
   "/products/:id",
   authenticateUser,
-  authorizeRoles("karyawan"),
+  // authorizeRoles("karyawan"),
   destroy
 );
 

@@ -1,5 +1,8 @@
 // import services images
-const { createImages } = require("../../services/mongoose/images");
+const {
+  getAllImages,
+  createImages,
+} = require("../../services/mongoose/images");
 
 const { StatusCodes } = require("http-status-codes");
 
@@ -20,6 +23,18 @@ const create = async (req, res) => {
   }
 };
 
+const index = async (req, res, next) => {
+  try {
+    const result = await getAllImages(req);
+
+    res.status(StatusCodes.OK).json({
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // Menyediakan gambar dari folder uploads
 const getUploadedImages = (req, res) => {
   // Ambil nama file dari parameter URL
@@ -32,4 +47,4 @@ const getUploadedImages = (req, res) => {
   res.sendFile(path.join(uploadFolder, imageName));
 };
 
-module.exports = { create, getUploadedImages };
+module.exports = { create, index, getUploadedImages };
